@@ -32,11 +32,11 @@ class GPortalL2RExtractor(Extractor):
         # Validate
         rrs = data[:].astype(np.float32)
         if 'Error_DN' in data.attrs:
-            rrs[rrs == data.attrs['Error_DN'][0]] = np.NaN
+            rrs[rrs == data.attrs['Error_DN'][0]] = np.nan
         if 'Maximum_valid_DN' in data.attrs:
-            rrs[rrs > data.attrs['Maximum_valid_DN'][0]] = np.NaN
+            rrs[rrs > data.attrs['Maximum_valid_DN'][0]] = np.nan
         if 'Minimum_valid_DN' in data.attrs:
-            rrs[rrs < data.attrs['Minimum_valid_DN'][0]] = np.NaN
+            rrs[rrs < data.attrs['Minimum_valid_DN'][0]] = np.nan
 
         # Convert DN to physical value
         slope = data.attrs['Rrs_slope'][0]

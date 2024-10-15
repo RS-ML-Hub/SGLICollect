@@ -34,7 +34,7 @@ def fill_group(df, g, api):
         if api ==SGLIAPIs.GPORTAL:
             df.loc[df.index[g.index[j]], "identifier"] = g.iloc[0]["identifier"]
             df.loc[df.index[g.index[j]], "file_status"] = g.iloc[0]["file_status"]
-            df.loc[df.index[g.index[j]], "resolution"] = g.iloc[0]["resolution"]
+            #df.loc[df.index[g.index[j]], "resolution"] = g.iloc[0]["resolution"]
             df.loc[df.index[g.index[j]], "download_url"] = g.iloc[0]["download_url"]
             df.loc[df.index[g.index[j]], "preview_url"] = g.iloc[0]["preview_url"]
             df.loc[df.index[g.index[j]], "cloud_coverage"] = g.iloc[0]["cloud_coverage"]

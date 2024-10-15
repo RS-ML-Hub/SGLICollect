@@ -31,11 +31,11 @@ class GPortalL2PExtractor(Extractor):
         # Validate
         prod = data[:].astype(np.float32)
         if 'Error_DN' in data.attrs:
-            prod[prod == data.attrs['Error_DN'][0]] = np.NaN
+            prod[prod == data.attrs['Error_DN'][0]] = np.nan
         if 'Maximum_valid_DN' in data.attrs:
-            prod[prod > data.attrs['Maximum_valid_DN'][0]] = np.NaN
+            prod[prod > data.attrs['Maximum_valid_DN'][0]] = np.nan
         if 'Minimum_valid_DN' in data.attrs:
-            prod[prod < data.attrs['Minimum_valid_DN'][0]] = np.NaN
+            prod[prod < data.attrs['Minimum_valid_DN'][0]] = np.nan
 
         # Convert DN to physical value
         slope = data.attrs['Slope'][0]
