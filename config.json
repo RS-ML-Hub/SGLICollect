@@ -1,5 +1,5 @@
 {
-  "operations": ["search"],
+  "operations": ["search", "download", "extract"],
   "args": {
     "product": "L2R",
     "csv": "./test_JASMES.csv",
