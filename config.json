@@ -2,9 +2,9 @@
   "operations": ["search", "download", "extract"],
   "args": {
     "product": "L2R",
-    "csv": "./test_JASMES.csv",
+    "csv": "./examples/test_GPortal.csv",
     "api": "GPORTAL",
-    "no_repeat": false,
+    "no_repeat": true,
     "cred": "./cred.json"
   }
 }
