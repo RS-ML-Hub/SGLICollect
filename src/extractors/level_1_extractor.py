@@ -30,7 +30,7 @@ class GPortalL1BExtractor(Extractor):
         data = self._h5['Image_data/' + real_prod_name]
         rad_or_ref = data[:]
 
-        errors = np.zeros(shape=rad_or_ref.shape, dtype=np.bool8)
+        errors = np.zeros(shape=rad_or_ref.shape, dtype=np.bool_)
 
         # Validate
         errors[rad_or_ref == data.attrs['Error_DN'][0]] = True
