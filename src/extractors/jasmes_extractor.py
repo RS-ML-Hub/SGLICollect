@@ -19,26 +19,50 @@ class JASMESExtractor(Extractor):
         self.__prod = prod
         self.__nc = Dataset(path, "r")
 
-    def __handle_digital_number(self, rrs:bool=False) -> np.ndarray[float, float]:
+    def __handle_digital_number(self, rrs: bool = False) -> np.ndarray:
         """
-        Convert digital number to the desired product
-
+        Convert digital number to the desired product with DN masking
         :prod JASMESProd 
         """
         # Get data
         prod:str = str(self.__prod.value)
 
         data = self.__nc.variables[prod]
+
+        # Extract raw DN data as numpy array
+        raw_dn = data[:].data.astype(np.float32)
+
+        # Mask DN values that are outside valid range or represent error/no observation
+        mask = np.full(raw_dn.shape, False, dtype=bool)
+
+        # Mask DN < Minimum_valid_DN
+        if hasattr(data, "Minimum_valid_DN"):
+            mask |= (raw_dn < data.Minimum_valid_DN)
+
+        # Mask DN > Maximum_valid_DN
+        if hasattr(data, "Maximum_valid_DN"):
+            mask |= (raw_dn > data.Maximum_valid_DN)
+
+        # Mask DN == Error_DN
+        if hasattr(data, "Error_DN"):
+            mask |= (raw_dn == data.Error_DN)
+
+        # Mask DN == No_observation_DN
+        if hasattr(data, "No_observation_DN"):
+            mask |= (raw_dn == data.No_observation_DN)
+
+        # Set masked DN to NaN before any conversion
+        raw_dn = np.where(mask, np.nan, raw_dn)
+
         # Convert DN to physical value
         if rrs:
-            scale = data.Rrs_scale_factor
+            scale  = data.Rrs_scale_factor
             offset = data.Rrs_add_offset
-            digital_data = (data[:].data - data.add_offset)/data.scale_factor
+            digital_data = (raw_dn - data.add_offset)/data.scale_factor
             physical_data = digital_data * scale + offset
         else:
-            physical_data = data[:].data
-        physical_data[physical_data > data.Maximum_valid_DN] = np.nan
-        physical_data[physical_data < data.Minimum_valid_DN] = np.nan
+            physical_data = raw_dn
+
         return physical_data
     
     def get_lat_lon(self) -> tuple[list[float], list[float]]:
