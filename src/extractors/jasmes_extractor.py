@@ -54,10 +54,12 @@ class JASMESExtractor(Extractor):
         # Set masked DN to NaN before any conversion
         raw_dn = np.where(mask, np.nan, raw_dn)
 
-        # Convert DN to physical value
+        # Convertion from DN to physical value is done automatically by netCDF4 if scale and offset attributes exist
         if rrs:
             scale  = data.Rrs_scale_factor
             offset = data.Rrs_add_offset
+            # VIP Note: as NetCDF4 automatically applies scale_factor and add_offset to Rrs, we need to reverse that first
+            #  then apply the Rrs scaling and offset
             digital_data = (raw_dn - data.add_offset)/data.scale_factor
             physical_data = digital_data * scale + offset
         else:
