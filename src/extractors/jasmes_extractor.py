@@ -58,8 +58,8 @@ class JASMESExtractor(Extractor):
         if rrs:
             scale  = data.Rrs_scale_factor
             offset = data.Rrs_add_offset
-            # VIP Note: as NetCDF4 automatically applies scale_factor and add_offset to Rrs, we need to reverse that first
-            #  then apply the Rrs scaling and offset
+            # VIP Note: as NetCDF4 automatically applies `scale_factor` and `add_offset` to get NWLR, we need to reverse that first to get DN
+            #  then apply the Rrs `Rrs_scale_factor` and `Rrs_add_offset`
             digital_data = (raw_dn - data.add_offset)/data.scale_factor
             physical_data = digital_data * scale + offset
         else:
