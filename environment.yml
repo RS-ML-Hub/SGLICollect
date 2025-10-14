@@ -1,4 +1,4 @@
-name: SGLICollect
+name: sgli_env
 channels:
   - conda-forge
 dependencies:
