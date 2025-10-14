@@ -214,12 +214,12 @@ No updates to the CSV, the files will be downloaded either in the specified down
 {
   "operations": ["search", "download", "extract"],
   "args": {
+    "api": "GPORTAL",
     "product": "L2R",
     "latitude": 44.853750035714505,
     "longitude": 138.32875040812206,
     "date": "2023/11/21",
     "download_dir": "~/Downloads/",
-    "api": "GPORTAL",
     "cred": "./cred.json"
   }
 }
@@ -233,12 +233,12 @@ Note: in this example, product_path doesn't need to be set because after the dow
 {
   "operations": ["search", "download", "extract"],
   "args": {
+    "api": "GPORTAL",
     "product": "L2R",
     "csv": "./test.csv"
-    "no_repeat": true,
+    "no_repeat": false,
     "download_dir": "~/Downloads/",
     "product_dir": "~/Downloads/",
-    "api": "GPORTAL",
     "cred": "./cred.json"
   }
 }

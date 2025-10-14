@@ -1,12 +1,12 @@
 {
   "operations": ["search", "download", "extract"],
   "args": {
-    "product": "L2R",
-    "csv": "D:/Data/in-situ-data.csv",
     "api": "GPORTAL",
-    "download_dir": "D:/Data/SGLI/GPORTAL/rrs/",
-    "product_dir": "D:/Data/SGLI/GPORTAL/rrs/",
-    "no_repeat": true,
-    "cred": "C:/Users/guest/Credential_GPortal.json"
+    "product": "L2R",
+    "csv": "D:/traing/SGLICollect/examples/example01.csv",
+    "download_dir": "D:/traing/SGLICollect/images",
+    "product_dir" : "D:/traing/SGLICollect/images",
+    "no_repeat": false,
+    "cred": "D:/traing/SGLICollect/credential/Credential_GPortal.json"
   }
 }

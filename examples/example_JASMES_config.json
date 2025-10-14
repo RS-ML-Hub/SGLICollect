@@ -1,12 +1,12 @@
 {
   "operations": ["search", "download", "extract"],
   "args": {
-    "product": "ALL",
-    "csv": "D:/Data/in-situ-data.csv",
     "api": "JASMES",
-    "download_dir": "D:/Data/SGLI/JASMES/rrs/",
-    "product_dir": "D:/Data/SGLI/JASMES/rrs/",
-    "no_repeat": true,
-    "cred": "C:/Users/guest/credential_JASMES.json"
+    "product": "ALL",
+    "csv": "D:/traing/SGLICollect/examples/example01.csv",
+    "download_dir": "D:/traing/SGLICollect/images",
+    "product_dir": "D:/traing/SGLICollect/images",
+    "no_repeat": false,
+    "cred": "D:/traing/SGLICollect/credential/credential_JASMES.json"
   }
 }
