@@ -16,9 +16,10 @@ import numpy as np
 class GPortalL2RExtractor(Extractor):
     __FLAGS: list[str] = ['DATAMISS', 'LAND', 'ATMFAIL', 'CLDICE', 'CLDAFFCTD', 
                         'STRAYLIGHT', 'HIGLINT', 'MODGLINT', 'HISOLZ', 'HITAUA', 
-                        'EPSOUT', 'OVERITER', 'NEGNLW', 'HIGHWS', 'TURBIDW'
+                        'GAMMA_OUT', 'OVERITER', 'NEGNLW', 'HIGHWS', 'SPARE_14',
+                        "SPARE_15"
                         ]
-        
+    
     def __digital_number_to_rrs(self, prod_name:str) -> np.ndarray[float, float]:
         """
         Convert digital number to the desired product
@@ -46,17 +47,76 @@ class GPortalL2RExtractor(Extractor):
         
     def __calculate_flags(self, flags_value: int) -> dict:
         """
-        Calculates a dictionary mapping of flag->boolean that indicates each flag and if it's set or not
+        - Decode the 16-bit quality assurance (QA) flag of a GCOM-C/SGLI Level-2 reflectance pixel.
+        - Each bit represents a specific quality condition, such as land, cloud contamination, sun glint, or atmospheric correction failure.
+        - Multiple conditions can be active simultaneously.
+        - The function returns the original QA value, its binary representation, the names of all active flags, and individual
+           binary indicators (0 or 1) for each quality condition.
+        - The fill value (65535) is treated as invalid QA data, with individual decoded flags set to NaN.        
+        0: "DATAMISS",       # No observation data in one or more band[s]
+        1: "LAND",           # Land pixel
+        2: "ATMFAIL",        # Atmospheric correction failure
+        3: "CLDICE",         # Apparent cloud/ice (high reflectance)
+        4: "CLDAFFCTD",      # Cloud-affected (near-cloud or thin/sub-pixel cloud)
+        5: "STRAYLIGHT",     # Stray light anticipated
+        6: "HIGLINT",        # High sun glint predicted
+        7: "MODGLINT",       # Moderate sun glint predicted (correction applied)
+        8: "HISOLZ",         # Solar zenith larger than threshold
+        9: "HITAUA",         # Aerosol optical thickness larger than threshold
+        10: "GAMMA-OUT",     # Atmospheric correction warning: Gamma out-of-bounds
+        11: "OVERITER",      # Maximum iterations reached for NIR correction
+        12: "NEGNLW",        # Negative nLw in one or more bands
+        13: "HIGHWS"         # Surface wind speed higher than threshold
+        # Bits 14 and 15 are SPARE    
+        Parameters
+        ----------
+        flags_value : int
+            Raw unsigned 16-bit value from Image_data/QA_flag.
 
-        :flags_value int the integer value of the flag
+        Returns
+        -------
+        dict
+            Original QA value, binary representation,
+            QA validity, combined flag names, and individual
+            flags (0, 1, or NaN).
         """
-        flags = {}
-        order = 0
-        while order < 15:
-            flags[self.__FLAGS[order]+"_GPROTAL"] = flags_value % 2
-            flags_value //= 2
-            order += 1
-        return flags
+        value = int(flags_value)
+
+        if not 0 <= value <= 65535:
+            raise ValueError(f"Invalid 16-bit QA value: {value}")
+
+        result = {
+            "QA_flag_GPORTAL": value,
+            "QA_flag_binary_GPORTAL": f"0b{value:016b}",
+            "QA_flag_valid_GPORTAL": int(value != 65535),
+        }
+
+        # Missing QA data
+        if value == 65535:
+            result["QA_flag_names_GPORTAL"] = "INVALID_QA"
+
+            for name in self.__FLAGS:
+                result[f"{name}_GPORTAL"] = np.nan
+
+            return result
+
+        active_flags = []
+
+        # Decode every bit independently
+        for bit, name in enumerate(self.__FLAGS):
+            is_set = (value >> bit) & 1
+            result[f"{name}_GPORTAL"] = is_set
+
+            if is_set:
+                active_flags.append(name)
+
+        # Human-readable combined flags
+        result["QA_flag_names_GPORTAL"] = (
+            "|".join(active_flags)
+            if active_flags else "NONE"
+        )
+
+        return result
 
     def get_pixel(self, lat:float, lon:float) -> dict:
         lat_mat, lon_mat = self.get_lat_lon()
