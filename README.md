@@ -41,7 +41,7 @@ Now you can use SGLICollect as follows:
 To use SGLICollect inside a conda environment please follow the instructions in this section
 
 1. Clone this repo:
-`git clone https://github.com/muhammads97/SGLICollect.git`
+`git clone https://github.com/RS-ML-Hub/SGLICollect.git`
 2. Install the conda environment:
 `conda env create -f environment.yml`
 3. Activate the conda environment:
