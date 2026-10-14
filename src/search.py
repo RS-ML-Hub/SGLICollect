@@ -85,6 +85,38 @@ def search(args: Namespace):
     print("=============================")
 
     df = pd.read_csv(args.csv, low_memory=True) # read csv
+    # Support CSV files containing either 'date' or 'time'
+    if "date" in df.columns:
+        date_source = "date"
+    elif "time" in df.columns:
+        date_source = "time"
+    else:
+        raise ValueError(
+            "Input CSV must contain either a 'date' or 'time' column."
+        )
+
+    # Parse timestamps and normalise dates to YYYY/MM/DD.
+    # UTC is used because OC-CCI timestamps end with 'Z'.
+    parsed_dates = pd.to_datetime(
+        df[date_source],
+        errors="coerce",
+        utc=True
+    )
+
+    # Fail clearly if any timestamps cannot be parsed
+    invalid = parsed_dates.isna()
+
+    if invalid.any():
+        examples = df.loc[invalid, date_source].head(5).tolist()
+        raise ValueError(
+            f"Found {invalid.sum()} invalid dates in "
+            f"column '{date_source}'. Examples: {examples}"
+        )
+
+    # Create or update the date column for SGLICollect
+    df["date"] = parsed_dates.dt.strftime("%Y/%m/%d")
+
+    # Group observations by location and observation date
     grouped = df.groupby(["lat", "lon", "date"])
     pbar = tqdm(total=len(df), position=0, leave=True) # prepare progress bar
 
