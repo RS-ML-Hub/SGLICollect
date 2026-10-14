@@ -121,6 +121,10 @@ def search(args: Namespace):
     pbar = tqdm(total=len(df), position=0, leave=True) # prepare progress bar
 
     for i, ((lat, lon, date), g) in enumerate(grouped):
+
+        # Skip in situ observations before SGLI availability
+        if pd.to_datetime(date) < pd.Timestamp("2018-01-01"):
+            continue
     
         id = get_value(g.iloc[0].fillna(0).to_dict(), id_key)
         resolution = GPortalResolution.H
