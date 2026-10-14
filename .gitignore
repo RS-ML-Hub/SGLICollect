@@ -21,3 +21,9 @@ env.yml
 
 *.csv
 !examples/*
+
+# macOS metadata files
+.DS_Store
+._*
+.AppleDouble/
+__MACOSX/
